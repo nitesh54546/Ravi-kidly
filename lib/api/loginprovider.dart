@@ -17,7 +17,7 @@ class LoginProvider extends ChangeNotifier {
       showCircleProgressDialog(context);
       notifyListeners();
       var response = await http.post(
-        Uri.parse(baseurl + sendOtp),
+        Uri.parse(apiBaseurl + sendOtp),
         body: body,
         headers: {
           'Content-Type': 'application/json',

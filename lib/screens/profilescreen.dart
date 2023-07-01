@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:kidly/constant/ApiConstant.dart';
 import 'package:kidly/modal/subscriptionModal.dart';
 import 'package:kidly/modal/userInfoModal.dart';
 import 'package:kidly/screens/SignUpScreen.dart';
 import 'package:kidly/screens/login.dart';
+import 'package:kidly/screens/studentlogin.dart';
 import 'package:kidly/utils/connectivity.dart';
 import 'package:kidly/utils/sharepreference.dart';
 import 'package:kidly/utils/snackbar.dart';
@@ -15,7 +17,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ProfileScreen extends StatefulWidget {
   List fetchSubscriptionList;
   Map userInfo;
-  ProfileScreen(this.fetchSubscriptionList, this.userInfo);
+  String route;
+  ProfileScreen(this.fetchSubscriptionList, this.userInfo, this.route);
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -49,7 +52,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
         profileDetails.name = widget.userInfo['name'];
       }
       if (widget.userInfo['mobile'] != null) {
-        profileDetails.mobile = widget.userInfo['mobile'];
+        profileDetails.mobile = widget.userInfo['mobile'].toString();
+      }
+      if (widget.userInfo['phone_number'] != null) {
+        profileDetails.mobile = widget.userInfo['phone_number'].toString();
+      }
+      if (widget.userInfo['username'] != null) {
+        profileDetails.userName = widget.userInfo['username'];
+      }
+      if (widget.userInfo['school_id'] != null) {
+        profileDetails.schoolId = widget.userInfo['school_id'].toString();
       }
       if (widget.userInfo['subscription'] != null) {
         subcriptionName = widget.userInfo['subscription']['name'].toString();
@@ -186,10 +198,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             SharedPreferences prefs =
                                 await SharedPreferences.getInstance();
                             prefs.clear();
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const LoginScreen()));
+                            widget.route == 'student'
+                                ? Get.offAll(StudentLoginScreen(widget.route))
+                                : Get.offAll(const LoginScreen());
                           },
                           child: Image.asset(
                             'assets/new/logout1.png',
@@ -294,26 +305,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           const SizedBox(
                             height: 28.25,
                           ),
-                          textfield(),
+                          widget.route == 'student' ? Container() : textfield(),
                           const SizedBox(
                             height: 27.75,
                           ),
-                          changePhoneBtn('CHANGE PHONE', () {
-                            if (birthDayController.text.isEmpty) {
-                              Fluttertoast.showToast(msg: 'Select your dob');
-                            } else {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SignUpScreen(
+                          widget.route == 'student'
+                              ? Container()
+                              : changePhoneBtn('CHANGE PHONE', () {
+                                  if (birthDayController.text.isEmpty) {
+                                    Fluttertoast.showToast(
+                                        msg: 'Select your dob');
+                                  } else {
+                                    Get.to(
+                                      SignUpScreen(
                                           birthDayController.text,
                                           'profile',
                                           profileDetails.name.toString(),
                                           profileDetails.mobile.toString(),
-                                          profileDetails.schoolName
-                                              .toString())));
-                            }
-                          }),
+                                          profileDetails.schoolName.toString()),
+                                    );
+                                  }
+                                }),
                           const SizedBox(
                             height: 19,
                           ),
@@ -367,12 +379,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return GestureDetector(
       onTap: () {
         // openCheckout('120');
-        !isOnline
-            ? showInSnackBar(
-                color, 'Please check internet connection!', context)
-            : subcriptionName.isEmpty
-                ? showSubscriptionDialog(context)
-                : null;
+        widget.route == 'student'
+            ? null
+            : !isOnline
+                ? showInSnackBar(
+                    color, 'Please check internet connection!', context)
+                : subcriptionName.isEmpty
+                    ? showSubscriptionDialog(context)
+                    : null;
       },
       child: Container(
           height: 58,

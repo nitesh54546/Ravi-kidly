@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:kidly/api/api.dart';
 import 'package:kidly/constant/ScreenConstant.dart';
 import 'package:kidly/screens/DashboardScreen.dart';
+import 'package:kidly/screens/DashboardScreen2.dart';
 import 'package:kidly/screens/OTPVerificationScreen.dart';
 import 'package:kidly/utils/customcircledialog.dart';
 import 'package:kidly/utils/sharepreference.dart';
@@ -17,14 +18,17 @@ class ApiConstants {
   bool isLoading = false;
   sendOTP(BuildContext context, String number, String type, String name,
       String schoolName) async {
-    var body = json.encode({'mobile': number, 'type': type});
+    var body = json.encode({
+      'mobile': number,
+      'type': type,
+    });
     print(body);
     try {
       isLoading = true;
       // EasyLoading.show();
       showCircleProgressDialog(context);
       var response = await http.post(
-        Uri.parse(baseurl + sendOtp),
+        Uri.parse(apiBaseurl + sendOtp),
         body: body,
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +62,7 @@ class ApiConstants {
     try {
       showCircleProgressDialog(context);
       var response = await http.post(
-        Uri.parse(baseurl + verify),
+        Uri.parse(apiBaseurl + verify),
         body: body,
         headers: {
           'Content-Type': 'application/json',
@@ -104,7 +108,7 @@ class ApiConstants {
     try {
       showCircleProgressDialog(context);
       var response = await http.post(
-        Uri.parse(baseurl + signup),
+        Uri.parse(apiBaseurl + signup),
         body: body,
         headers: {
           'Content-Type': 'application/json',
@@ -144,7 +148,7 @@ class ApiConstants {
     try {
       showCircleProgressDialog(context);
       var response = await http.post(
-        Uri.parse(baseurl + subscribedUser),
+        Uri.parse(apiBaseurl + subscribedUser),
         body: body,
         headers: {
           'Content-Type': 'application/json',
@@ -157,7 +161,7 @@ class ApiConstants {
       if (dataAll['success'] == true) {
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => const DashboardScreen()),
+            MaterialPageRoute(builder: (context) => DashboardScreen()),
             (route) => true);
         showInSnackBar(Colors.green, dataAll['message'], context);
       } else {
@@ -171,7 +175,7 @@ class ApiConstants {
   }
 
   userUpdateDetail(BuildContext context, String name, String dob, String number,
-      String token, String schoolName) async {
+      String token, String schoolName, String type) async {
     var body = json.encode({
       'name': name,
       'dob': dob,
@@ -182,7 +186,9 @@ class ApiConstants {
     try {
       showCircleProgressDialog(context);
       var response = await http.post(
-        Uri.parse(baseurl + updateDetail),
+        Uri.parse(type == 'student'
+            ? (studentBaseUrl + studentUpdateDetail)
+            : (apiBaseurl + updateDetail)),
         body: body,
         headers: {
           'Content-Type': 'application/json',
@@ -194,7 +200,7 @@ class ApiConstants {
       var dataAll = json.decode(response.body);
       if (dataAll['success'] == true) {
         Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const DashboardScreen()));
+            MaterialPageRoute(builder: (context) => DashboardScreen()));
         showInSnackBar(Colors.green, dataAll['message'], context);
       } else {
         showInSnackBar(Colors.red, dataAll['message'], context);
@@ -206,27 +212,27 @@ class ApiConstants {
     }
   }
 
-  callSearchApi(BuildContext context, String token, String text) async {
-    try {
-      var response = await http.get(
-        Uri.parse(baseurl + searchApi + text),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token'
-        },
-      );
-      log(response.body);
-      var dataAll = json.decode(response.body);
-      if (dataAll['success'] == true) {
-        showInSnackBar(Colors.green, dataAll['message'], context);
-      } else {
-        showInSnackBar(Colors.red, dataAll['message'], context);
-      }
-    } catch (e) {
-      print(e.toString());
-    }
-  }
+  // callSearchApi(BuildContext context, String token, String text) async {
+  //   try {
+  //     var response = await http.get(
+  //       Uri.parse(baseurl + searchApi + text),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Accept': 'application/json',
+  //         'Authorization': 'Bearer $token'
+  //       },
+  //     );
+  //     log(response.body);
+  //     var dataAll = json.decode(response.body);
+  //     if (dataAll['success'] == true) {
+  //       showInSnackBar(Colors.green, dataAll['message'], context);
+  //     } else {
+  //       showInSnackBar(Colors.red, dataAll['message'], context);
+  //     }
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
 
   showCircleProgressDialog(BuildContext context) async {
     return await showDialog(

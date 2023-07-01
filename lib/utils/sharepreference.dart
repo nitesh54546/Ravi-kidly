@@ -5,6 +5,11 @@ setToken(String token) async {
   prefs.setString('auth_token', token);
 }
 
+setRouteType(String type) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString('routeType', type);
+}
+
 setSubscription(String subscription) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString('subscription', subscription);

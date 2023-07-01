@@ -4,8 +4,13 @@
 
 class UserInfoModal {
   UserInfoModal(
-      {this.id, this.name, this.mobile, this.active, this.schoolName});
-
+      {this.id,
+      this.name,
+      this.mobile,
+      this.active,
+      this.schoolName,
+      this.schoolId,
+      this.userName});
   num? id;
   String? name;
   String? mobile;
@@ -23,4 +28,7 @@ class UserInfoModal {
   DateTime? updatedAt;
   String? subname;
   String? activities;
+  String? schoolId;
+  String? userName;
+  String? email;
 }

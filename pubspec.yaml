@@ -53,13 +53,8 @@ dependencies:
   facebook_app_events: ^0.17.1
   firebase_in_app_messaging: ^0.7.0+14
   firebase_database: ^10.0.15
-#  flutter_facebook_login:
-  # flutter_facebook_sdk:
-#  flutter_facebook_sdk:
-  # google_tag_manager: ^0.1.0
-  # dependency_overrides:
+  get: ^4.6.5
   firebase_core_platform_interface: ^4.5.1
-  # js:
 
 dev_dependencies:
   flutter_test:
@@ -111,6 +106,9 @@ flutter:
     - family: NunitoRegular
       fonts:
         - asset: assets/font/Nunito-Regular.ttf
+    - family: ArialRoundedMt
+      fonts:
+        - asset: assets/font/Arial Rounded MT Regular.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #

@@ -13,6 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:kidly/constant/ScreenConstant.dart';
 import 'package:kidly/screens/DashboardScreen.dart';
+import 'package:kidly/screens/DashboardScreen2.dart';
 import 'package:kidly/screens/OTPVerificationScreen.dart';
 import 'package:kidly/screens/SignUpScreen.dart';
 import 'package:kidly/screens/SplashScreen.dart';
@@ -24,6 +25,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:google_tag_manager/google_tag_manager.dart' as gtm;
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'high_importance_channel', //id
@@ -195,7 +197,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: provider,
-      child: MaterialApp(
+      child: GetMaterialApp(
         title: 'Kidly',
         supportedLocales: const [
           Locale('en'),
@@ -221,10 +223,10 @@ class _MyAppState extends State<MyApp> {
           ScreenConstant.signUp: (context) => SignUpScreen('', '', '', '', ''),
           ScreenConstant.otp: (context) =>
               OTPVerificationScreen('', '', '', ''),
-          ScreenConstant.dashboard: (context) => const DashboardScreen(),
+          ScreenConstant.dashboard: (context) => DashboardScreen(),
           ScreenConstant.login: ((context) => const LoginScreen())
         },
-        home: checkLogin ? const DashboardScreen() : const SplashScreen(),
+        home: checkLogin ? DashboardScreen() : const SplashScreen(),
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
+import 'dart:math' as math;
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -12,6 +13,7 @@ import 'package:kidly/modal/searchmodal.dart';
 import 'package:kidly/modal/storyBooksmodal.dart';
 import 'package:kidly/screens/webview.dart';
 import 'package:kidly/utils/connectivity.dart';
+import 'package:kidly/utils/constants.dart';
 import 'package:kidly/utils/nointernet.dart';
 import 'package:provider/provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -30,8 +32,6 @@ import 'package:kidly/utils/snackbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
-
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
@@ -39,14 +39,15 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   TextEditingController searchController = TextEditingController();
   ApiConstants apiConstants = ApiConstants();
-  static const _actionTitles = ['Create Post', 'Upload Photo', 'Upload Video'];
 
   int selectTabBar = 0;
   String token = '';
   String selectedFlating = '';
+
   // To get token
   getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    routeType = prefs.getString('routeType').toString();
     if (prefs.getString('auth_token') != null) {
       setState(() {
         token = prefs.getString('auth_token').toString();
@@ -75,7 +76,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       });
       showCircleProgressDialog(context);
       var response = await http.get(
-        Uri.parse(baseurl + userActivity),
+        Uri.parse(routeType == 'student'
+            ? (studentBaseUrl + studentActivity)
+            : (apiBaseurl + userActivity)),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -111,7 +114,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   fetchSubscription() async {
     try {
       var response = await http.get(
-        Uri.parse(baseurl + getSubscription),
+        Uri.parse(apiBaseurl + getSubscription),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -216,6 +219,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   ValueNotifier<bool> isDialOpen = ValueNotifier(false);
 
+  getPref() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // routeType = prefs.getString('routeType').toString();
+    if (prefs.getString('auth_token') != null) {
+      fetchUserDetails(prefs.getString('auth_token').toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isOnline = Provider.of<ConnectivityProvider>(context).isOnline;
@@ -233,134 +244,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ))),
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          floatingActionButton: !isOnline
-              ? Container()
-              : SpeedDial(
-                  openCloseDial: isDialOpen,
-                  elevation: 0,
-                  overlayOpacity: 0,
-                  visible: true,
-                  tooltip: "Hello! Try me",
-                  child: Image.asset(
-                    'assets/new/float4.png',
-                    fit: BoxFit.cover,
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                  ),
-                  activeChild: Image.asset(
-                    'assets/new/float4.png',
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: double.infinity,
-                  ),
-                  backgroundColor: Colors.transparent,
-                  children: [
-                    SpeedDialChild(
-                      backgroundColor: Colors.transparent,
-                      child: InkWell(
-                        onTap: () {
-                          setState(() {
-                            isDialOpen.value = false;
-                            searchProvider.changeNotFoundStatus(false);
-                            searchProvider.changeSearchStatus(false);
-                            searchController.clear();
-                            searchProvider.searchList.clear();
-                            selectedFlating = 'home';
-
-                            // change  tab bar
-                            selectTabBar = 0;
-                          });
-                        },
-                        child: Image.asset(
-                          'assets/new/home1.png',
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: double.infinity,
-                        ),
-                      ),
-                      labelStyle: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'NunitoRegular',
-                      ),
-                      label: "Home",
-                    ),
-                    // SpeedDialChild(
-                    //     backgroundColor: Colors.transparent,
-                    //     child: InkWell(
-                    //       onTap: () {
-                    //         setState(() {
-                    //           isDialOpen.value = false;
-                    //           searchProvider.changeNotFoundStatus(false);
-                    //           searchProvider.changeSearchStatus(false);
-                    //           searchController.clear();
-                    //           searchProvider.searchList.clear();
-                    //           selectedFlating = 'story';
-                    //         });
-                    //       },
-                    //       child: Image.asset(
-                    //         'assets/new/float1.png',
-                    //         fit: BoxFit.cover,
-                    //         width: double.infinity,
-                    //         height: double.infinity,
-                    //       ),
-                    //     ),
-                    //     labelStyle: const TextStyle(
-                    //         fontFamily: 'NunitoRegular',
-                    //         fontSize: 16,
-                    //         fontWeight: FontWeight.w500),
-                    //     label: "Storybooks"),
-                    SpeedDialChild(
-                        backgroundColor: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              isDialOpen.value = false;
-                              searchProvider.changeNotFoundStatus(false);
-                              searchProvider.changeSearchStatus(false);
-                              searchController.clear();
-                              searchProvider.searchList.clear();
-                              selectedFlating = 'rhyms';
-                            });
-                          },
-                          child: Image.asset(
-                            'assets/new/float2.png',
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: double.infinity,
-                          ),
-                        ),
-                        labelStyle: const TextStyle(
-                            fontFamily: 'NunitoRegular',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500),
-                        label: "Rhymes"),
-                    SpeedDialChild(
-                        backgroundColor: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              isDialOpen.value = false;
-                            });
-
-                            searchController.clear();
-                            searchProvider.searchList.clear();
-                            searchBox(searchProvider);
-                          },
-                          child: Image.asset(
-                            'assets/new/float3.png',
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: double.infinity,
-                          ),
-                        ),
-                        labelStyle: const TextStyle(
-                            fontFamily: 'NunitoRegular',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500),
-                        label: "Search"),
-                  ],
-                ),
           body: !isOnline
               ? noInternet()
               : Column(
@@ -385,13 +268,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           const Spacer(),
                           GestureDetector(
+                            onTap: () {
+                              searchBox(searchProvider);
+                            },
+                            child: Container(
+                                height: 59,
+                                width: 59,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    // shape: BoxShape.circle,
+                                    borderRadius: BorderRadius.circular(100)),
+                                alignment: Alignment.center,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: Image.asset(
+                                    'assets/images/search (2).jpeg',
+                                    height: 30,
+                                    width: 30,
+                                  ),
+                                )),
+                          ),
+                          const SizedBox(
+                            width: 12,
+                          ),
+                          GestureDetector(
                               onTap: () {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => ProfileScreen(
                                             fetchSubscriptionList,
-                                            userInfo))).then((value) {
+                                            userInfo,
+                                            routeType))).then((value) {
                                   setState(() {
                                     selectedImage = value.toString();
                                   });
@@ -417,51 +325,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         ? 'assets/new/Cat.png'
                                         : selectedImage)),
                               )),
-                          // const SizedBox(
-                          //   width: 10,
-                          // ),
-                          // GestureDetector(
-                          //     onTap: () {},
-                          //     child: Container(
-                          //       height: 30,
-                          //       width: 30,
-                          //       alignment: Alignment.center,
-                          //       decoration: BoxDecoration(
-                          //           boxShadow: const [
-                          //             BoxShadow(
-                          //                 color: Color(0xff00000066),
-                          //                 blurRadius: 12,
-                          //                 offset: Offset(0, 3)),
-                          //           ],
-                          //           border: Border.all(
-                          //               color: const Color(0xffFFFFFF)),
-                          //           borderRadius: BorderRadius.circular(100)),
-                          //       child: ClipRRect(
-                          //         borderRadius: BorderRadius.circular(100),
-                          //         child: Image.asset(
-                          //           'assets/images/notification.png',
-                          //           // height: 30,
-                          //           // width: 30,
-                          //           fit: BoxFit.cover,
-                          //         ),
-                          //       ),
-                          //     )),
                         ],
                       ),
                     ),
-                    searchProvider.isSearchData == true ||
-                            selectedFlating == 'rhyms'
-                        ? Container()
-                        : tabBar(),
-                    searchProvider.notfound == true
-                        ? Container()
-                        : searchProvider.isSearchData == true
-                            ? searchWidget(searchProvider)
-                            : selectedFlating == 'rhyms'
-                                ? rhymsWidget()
-                                : selectedFlating == 'story'
+                    searchProvider.isSearchData == true
+                        ? searchWidget(searchProvider)
+                        : Expanded(
+                            child: Column(
+                              children: [
+                                tabBar(),
+                                selectedFlating == 'story'
                                     ? storyBooksWidget()
                                     : activityWidget()
+                              ],
+                            ),
+                          )
+                    // searchProvider.isSearchData == true ||
+                    //         selectedFlating == 'rhyms'
+                    //     ? Container()
+                    //     : tabBar(),
+                    // searchProvider.notfound == true
+                    //     ? Container()
+                    //     : searchProvider.isSearchData == true
+                    //         ? searchWidget(searchProvider)
+                    //         : selectedFlating == 'rhyms'
+                    //             ? rhymsWidget()
+                    //             : selectedFlating == 'story'
+                    //                 ? storyBooksWidget()
+                    //                 : activityWidget()
                   ],
                 ),
         ),
@@ -474,7 +365,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
       height: 51,
       margin: const EdgeInsets.only(left: 15, right: 15, top: 15),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8), color: Colors.white),
+          borderRadius: BorderRadius.circular(31),
+          border: Border.all(color: tabBorderColor, width: 2),
+          gradient: LinearGradient(
+            colors: [grade1, grade2],
+            tileMode: TileMode.clamp,
+            begin: const Alignment(-1.0, -0.0),
+            end: const Alignment(1.0, 0.0),
+            transform: const GradientRotation(math.pi / 2),
+
+            // tileMode: TileMode.repeated,
+          )),
       child: Row(
         children: [
           Flexible(
@@ -487,18 +388,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
               },
               child: Container(
                   decoration: BoxDecoration(
-                      color: selectTabBar == 0
-                          ? const Color(0xffEA0047)
-                          : Colors.white,
-                      borderRadius: BorderRadius.circular(8)),
+                      color: selectTabBar == 0 ? Colors.white : null,
+                      borderRadius: BorderRadius.circular(31)),
                   alignment: Alignment.center,
-                  child: Text(
-                    'Activity',
-                    style: TextStyle(
-                        fontFamily: 'NunitoRegular',
-                        color: selectTabBar == 0 ? Colors.white : Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      selectTabBar == 0
+                          ? Image.asset(
+                              'assets/images/activities.jpeg',
+                              width: 24,
+                              height: 24,
+                            )
+                          : Container(),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        'Activities',
+                        style: TextStyle(
+                            fontFamily: arialRounded,
+                            color: selectTabBar == 0 ? redColor : Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ],
                   )),
             ),
           ),
@@ -515,18 +429,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                    color: selectTabBar == 1
-                        ? const Color(0xffEA0047)
-                        : Colors.white,
-                    borderRadius: BorderRadius.circular(8)),
+                    color: selectTabBar == 1 ? Colors.white : null,
+                    borderRadius: BorderRadius.circular(31)),
                 alignment: Alignment.center,
-                child: Text(
-                  'Storybooks',
-                  style: TextStyle(
-                      fontFamily: 'NunitoRegular',
-                      color: selectTabBar == 1 ? Colors.white : Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    selectTabBar == 1
+                        ? Image.asset(
+                            'assets/images/stories.jpeg',
+                            width: 24,
+                            height: 24,
+                          )
+                        : Container(),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      'Stories',
+                      style: TextStyle(
+                          fontFamily: arialRounded,
+                          color: selectTabBar == 1 ? redColor : Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -574,7 +501,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       child: Container(
                           height: 100,
                           decoration: BoxDecoration(
-                              boxShadow: [
+                              boxShadow: const [
                                 BoxShadow(
                                     color: Color(0xff00000029),
                                     offset: Offset(0, 3))
@@ -732,110 +659,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   child: Center(
                                       child: Text(
                                     storyBooksModal.name.toString(),
-                                    style: const TextStyle(
-                                        fontFamily: 'NunitoRegular',
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600),
-                                  )),
-                                ),
-                              ),
-                            ],
-                          )),
-                    );
-                  })),
-    );
-  }
-
-  rhymsWidget() {
-    return Expanded(
-      child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: rhymsList.isEmpty
-              ? const Center(
-                  child: Text(
-                    "No Rhyms Activities",
-                    style: TextStyle(
-                      fontFamily: 'NunitoRegular',
-                    ),
-                  ),
-                )
-              : GridView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: rhymsList.length,
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.only(
-                      left: 19, right: 23, bottom: 10, top: 13),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 38,
-                      mainAxisSpacing: 34,
-                      childAspectRatio: 1 / .8),
-                  itemBuilder: (context, index) {
-                    RhymsModal rhymsModal =
-                        RhymsModal.fromJson(rhymsList[index]);
-                    return InkWell(
-                      onTap: () {
-                        print('object');
-                        Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        FullWebView(rhymsModal.url.toString())))
-                            .then((value) {
-                          SystemChrome.setPreferredOrientations([
-                            DeviceOrientation.portraitUp,
-                            DeviceOrientation.portraitDown
-                          ]);
-                        });
-                      },
-                      child: Container(
-                          height: 100,
-                          decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Color(0xff00000029),
-                                    offset: Offset(0, 3))
-                              ],
-                              border:
-                                  Border.all(color: const Color(0xffD3D3D3)),
-                              // color: Colors.green,
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                  top: 0,
-                                  bottom: 0,
-                                  left: 0,
-                                  right: 0,
-                                  child: ClipRRect(
-                                      borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(20),
-                                          topRight: Radius.circular(20),
-                                          bottomLeft: Radius.circular(20),
-                                          bottomRight: Radius.circular(20)),
-                                      child: FadeInImage.assetNetwork(
-                                        placeholder:
-                                            'assets/images/sample_list_image.jpeg',
-                                        // placeholderFit: BoxFit.fill,
-                                        fadeInCurve: Curves.easeInOut,
-                                        fadeOutCurve: Curves.bounceInOut,
-                                        image: rhymsModal.image.toString(),
-                                        fit: BoxFit.cover,
-                                      ))),
-                              Positioned(
-                                bottom: 0,
-                                left: 0,
-                                right: 0,
-                                child: Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: const BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                          bottomRight: Radius.circular(20),
-                                          bottomLeft: Radius.circular(20)),
-                                      color: Colors.black54),
-                                  child: Center(
-                                      child: Text(
-                                    rhymsModal.name.toString(),
                                     style: const TextStyle(
                                         fontFamily: 'NunitoRegular',
                                         color: Colors.white,
@@ -1120,7 +943,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   accountSheet() {
     showModalBottomSheet(
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
@@ -1128,7 +951,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         context: context,
         builder: (context) {
           return Container(
-            decoration: BoxDecoration(boxShadow: [
+            decoration: const BoxDecoration(boxShadow: [
               BoxShadow(color: Color(0xff00000029), offset: Offset(-3, -3))
             ]),
             padding:
@@ -1141,11 +964,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ProfileScreen(
-                                    fetchSubscriptionList, userInfo)))
-                        .then((value) {
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfileScreen(
+                                fetchSubscriptionList,
+                                userInfo,
+                                routeType))).then((value) {
                       setState(() {
                         selectedImage = value.toString();
                       });
@@ -1313,8 +1137,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 GestureDetector(
                   onTap: () {
+                    if (searchController.text.isEmpty) {
+                      searchProvider.isSearchData = false;
+                      setState(() {});
+                    }
                     searchProvider.callSearchApi(
-                        context, token, searchController.text);
+                        context, token, searchController.text, routeType);
                   },
                   child: Container(
                     height: 40,
@@ -1385,7 +1213,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     try {
       showCircleProgressDialog(context);
       var response = await http.post(
-        Uri.parse(baseurl + subscribedUser),
+        Uri.parse(apiBaseurl + subscribedUser),
         body: body,
         headers: {
           'Content-Type': 'application/json',
@@ -1417,7 +1245,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   fetchRhymsActivities(String authToken) async {
     try {
       var response = await http.get(
-        Uri.parse(baseurl + rhymsApi),
+        Uri.parse(routeType == 'student'
+            ? (studentBaseUrl + studentRhymsApi)
+            : (apiBaseurl + rhymsApi)),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -1443,7 +1273,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   fetchStoryBooksActivities(String authToken) async {
     try {
       var response = await http.get(
-        Uri.parse(baseurl + storyBooksApi),
+        Uri.parse(routeType == 'student'
+            ? (studentBaseUrl + studentStoryBooksApi)
+            : (apiBaseurl + storyBooksApi)),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -1469,7 +1301,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   fetchUserDetails(authToken) async {
     try {
       var response = await http.get(
-        Uri.parse(baseurl + usergetDetails),
+        Uri.parse(routeType == 'student'
+            ? (studentBaseUrl + studentGetDetails)
+            : (apiBaseurl + usergetDetails)),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -1477,9 +1311,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
         },
       );
       log(response.body);
+      print(response.request);
       var dataAll = json.decode(response.body);
       if (dataAll['success'] == true) {
-        userInfo = dataAll['user'];
+        userInfo =
+            routeType == 'student' ? dataAll['student'] : dataAll['user'];
       } else {
         showInSnackBar(Colors.red, dataAll['message'], context);
       }

@@ -24,10 +24,13 @@ class SearchProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  callSearchApi(BuildContext context, String token, String text) async {
+  callSearchApi(
+      BuildContext context, String token, String text, String type) async {
     try {
       var response = await http.get(
-        Uri.parse(baseurl + searchApi + text),
+        Uri.parse(type == 'student'
+            ? (studentBaseUrl + studentSearchApi + text)
+            : (apiBaseurl + searchApi + text)),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -40,7 +43,7 @@ class SearchProvider extends ChangeNotifier {
       if (dataAll['success'] == true) {
         Navigator.pop(context);
         notfound = false;
-        isSearchData = true;
+        isSearchData = text.isEmpty ? false : true;
         searchList = dataAll['activities'];
         notifyListeners();
         showInSnackBar(Colors.green, dataAll['message'], context);
