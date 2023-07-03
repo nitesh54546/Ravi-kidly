@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 class StudentProvider extends ChangeNotifier {
   final userNameController = TextEditingController();
   final passwordController = TextEditingController();
+  bool isVisible = true;
 
   validation(BuildContext context) {
     if (userNameController.text.isEmpty) {

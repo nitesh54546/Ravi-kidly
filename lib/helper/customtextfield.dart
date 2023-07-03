@@ -29,12 +29,15 @@ class CustomTextField extends StatelessWidget {
             BoxShadow(
                 color: Colors.black12, offset: Offset(2, 2), blurRadius: 10)
           ]),
+      alignment: Alignment.centerLeft,
       child: TextField(
         controller: controller,
         inputFormatters: inputFormatters,
+        textAlignVertical: TextAlignVertical.center,
         keyboardType: textInputType,
         style: const TextStyle(fontFamily: productSans, color: Colors.black),
         decoration: InputDecoration.collapsed(
+            border: InputBorder.none,
             hintText: hintText,
             hintStyle:
                 const TextStyle(fontFamily: productSans, color: Colors.black)),

@@ -181,6 +181,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     getLoginUser();
+
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
     configLocalNotification();
     getFCMToken();
     facebookAppEvents.setAdvertiserTracking(enabled: true);

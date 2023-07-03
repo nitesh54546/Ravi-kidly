@@ -55,9 +55,7 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: CustomTextField(
-                      hintText: 'Password',
-                      controller: provider.passwordController),
+                  child: passwordTextField(provider),
                 ),
                 const SizedBox(
                   height: 68,
@@ -76,6 +74,53 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  passwordTextField(StudentProvider provider) {
+    return Container(
+      height: 53,
+      padding: const EdgeInsets.all(15),
+      margin: const EdgeInsets.symmetric(
+          // horizontal: 25,
+          ),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+          boxShadow: const [
+            BoxShadow(
+                color: Colors.black12, offset: Offset(2, 2), blurRadius: 10)
+          ]),
+      alignment: Alignment.centerLeft,
+      child: TextField(
+        obscureText: provider.isVisible,
+        controller: provider.passwordController,
+        textAlignVertical: TextAlignVertical.center,
+        style: const TextStyle(fontFamily: productSans, color: Colors.black),
+        decoration: InputDecoration(
+            isDense: true,
+            contentPadding: EdgeInsets.zero,
+            border: InputBorder.none,
+            suffixIcon: InkWell(
+              onTap: () {
+                setState(() {
+                  if (provider.isVisible) {
+                    provider.isVisible = false;
+                  } else {
+                    provider.isVisible = true;
+                  }
+                });
+              },
+              child: Icon(
+                provider.isVisible ? Icons.visibility_off : Icons.visibility,
+                color: Colors.grey,
+                size: 22,
+              ),
+            ),
+            hintText: 'Password',
+            hintStyle:
+                const TextStyle(fontFamily: productSans, color: Colors.black)),
       ),
     );
   }
