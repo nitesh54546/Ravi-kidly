@@ -2,7 +2,8 @@
 
 <resources>
     <string name="notification_channel_id" translatable="false">high_importance_channel</string>
-    
+    <!-- 645177030382509  old-->
+    <!-- 1385621742261817  new-->
     <string name="facebook_app_id">645177030382509</string>
     <string name="facebook_client_token">495ca1dc73679b848ef69ed49dd35d95</string>
 </resources>

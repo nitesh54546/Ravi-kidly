@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'dart:io';
@@ -9,11 +10,9 @@ import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:flutter_facebook_sdk/flutter_facebook_sdk.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:kidly/constant/ScreenConstant.dart';
 import 'package:kidly/screens/DashboardScreen.dart';
-import 'package:kidly/screens/DashboardScreen2.dart';
 import 'package:kidly/screens/OTPVerificationScreen.dart';
 import 'package:kidly/screens/SignUpScreen.dart';
 import 'package:kidly/screens/SplashScreen.dart';
@@ -22,8 +21,6 @@ import 'package:kidly/utils/provider.dart';
 import 'package:kidly/utils/sharepreference.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:google_tag_manager/google_tag_manager.dart' as gtm;
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 
@@ -61,6 +58,17 @@ void main() async {
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: true, badge: true, sound: true);
   _getInstanceId();
+  // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  // runZonedGuarded(
+  //   () {
+  // runApp(MyApp());
+  //   },
+  //   (error, stack) => FirebaseCrashlytics.instance.recordError(
+  //     error,
+  //     stack,
+  //     fatal: true,
+  //   ),
+  // );
   runApp(const MyApp());
 
   // to hide status bar
@@ -114,7 +122,6 @@ class _MyAppState extends State<MyApp> {
     var platformChannelSpecifics = NotificationDetails(
         android: androidPlatformChannelSpecifics,
         iOS: iOSPlatformChannelSpecifics);
-    print(message.data.toString());
     await flutterLocalNotificationsPlugin.show(
         0,
         message.data['title'].toString(),
@@ -127,7 +134,6 @@ class _MyAppState extends State<MyApp> {
     FirebaseMessaging.instance.requestPermission();
     FirebaseMessaging.instance.getAPNSToken();
     FirebaseMessaging.instance.getToken().then((token) async {
-      print('fcm-token-----$token');
       setFcmToken(token!);
     });
 
@@ -181,11 +187,10 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     getLoginUser();
-
+    facebookAppEvents.setAdvertiserTracking(enabled: true);
     SystemChannels.textInput.invokeMethod('TextInput.hide');
     configLocalNotification();
     getFCMToken();
-    facebookAppEvents.setAdvertiserTracking(enabled: true);
     facebookAppEvents.logEvent(
       name: 'Tabschool Kidly',
       parameters: {

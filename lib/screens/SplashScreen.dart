@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kidly/constant/ScreenConstant.dart';
 import 'package:kidly/screens/SignUpScreen.dart';
 import 'package:kidly/screens/login.dart';
 import 'package:kidly/screens/studentlogin.dart';
@@ -56,6 +55,22 @@ class _SplashScreenState extends State<SplashScreen> {
                 GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     onTap: () {
+                      setRouteType('login');
+                      Get.to(const LoginScreen(),
+                          transition: Transition.noTransition);
+                    },
+                    child: Image.asset(
+                      "assets/new/signin.png",
+                      height: 60,
+                      width: 189,
+                      fit: BoxFit.cover,
+                    )),
+                const SizedBox(
+                  height: 15,
+                ),
+                GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
                       setRouteType('signup');
                       Get.to(SignUpScreen('', 'signup', '', '', ''),
                           transition: Transition.noTransition);
@@ -76,27 +91,17 @@ class _SplashScreenState extends State<SplashScreen> {
                       Get.to(const StudentLoginScreen('student'),
                           transition: Transition.noTransition);
                     },
-                    child: Image.asset(
-                      "assets/new/schoolchild.png",
-                      height: 60,
-                      width: 189,
-                      fit: BoxFit.cover,
-                    )),
-                const SizedBox(
-                  height: 15,
-                ),
-                GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () {
-                      setRouteType('login');
-                      Get.to(const LoginScreen(),
-                          transition: Transition.noTransition);
-                    },
-                    child: Image.asset(
-                      "assets/new/signin.png",
-                      height: 60,
-                      width: 189,
-                      fit: BoxFit.cover,
+                    child: Container(
+                      height: 40,
+                      alignment: Alignment.center,
+                      child: const Text(
+                        'School Sign In',
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontFamily: 'ProductSans',
+                          color: Color(0xffFFFFFF),
+                        ),
+                      ),
                     )),
                 const Spacer(),
               ],

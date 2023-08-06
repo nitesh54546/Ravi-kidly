@@ -4,19 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:kidly/constant/ApiConstant.dart';
-import 'package:kidly/constant/ScreenConstant.dart';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:kidly/api/api.dart';
 import 'package:kidly/utils/connectivity.dart';
-import 'package:kidly/utils/customcircledialog.dart';
 import 'package:kidly/utils/showcircleprogressdialog.dart';
 import 'package:kidly/utils/snackbar.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// ignore: must_be_immutable
 class OTPVerificationScreen extends StatefulWidget {
   String name;
   String number;

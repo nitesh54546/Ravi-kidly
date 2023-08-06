@@ -3,12 +3,9 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 import 'dart:math' as math;
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:kidly/constant/AppConstant.dart';
 import 'package:kidly/constant/searchprovider.dart';
-import 'package:kidly/modal/rhymsmodal.dart';
 import 'package:kidly/modal/searchmodal.dart';
 import 'package:kidly/modal/storyBooksmodal.dart';
 import 'package:kidly/screens/webview.dart';
@@ -16,8 +13,8 @@ import 'package:kidly/utils/connectivity.dart';
 import 'package:kidly/utils/constants.dart';
 import 'package:kidly/utils/nointernet.dart';
 import 'package:provider/provider.dart';
+import 'package:rate_my_app/rate_my_app.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:kidly/api/api.dart';
@@ -26,7 +23,6 @@ import 'package:kidly/modal/subscriptionModal.dart';
 import 'package:kidly/modal/userActivitiesModal.dart';
 import 'package:kidly/screens/login.dart';
 import 'package:kidly/screens/profilescreen.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:kidly/utils/showcircleprogressdialog.dart';
 import 'package:kidly/utils/snackbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -141,6 +137,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void openCheckout(
     String price,
   ) {
+    //  rzp_test_vtP7FZhZlmmzDf
     var options = {
       "key": "rzp_live_2Z3YfTFWf0WiTN",
       "amount": num.parse(price) * 100,
@@ -193,6 +190,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlerErrorFailure);
     razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handlerExternalWallet);
 
+    Future.delayed(Duration(seconds: 6), () {
+      callRateDiloagBox();
+    });
     super.initState();
   }
 
@@ -217,14 +217,41 @@ class _DashboardScreenState extends State<DashboardScreen> {
     exit(0);
   }
 
-  ValueNotifier<bool> isDialOpen = ValueNotifier(false);
-
   getPref() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // routeType = prefs.getString('routeType').toString();
     if (prefs.getString('auth_token') != null) {
       fetchUserDetails(prefs.getString('auth_token').toString());
     }
+  }
+
+  final RateMyApp rateMyApp = RateMyApp(
+      minDays: 0,
+      minLaunches: 2,
+      remindDays: 7,
+      remindLaunches: 10,
+      googlePlayIdentifier: 'com.tabschool.kidly');
+
+  callRateDiloagBox() {
+    rateMyApp.init().then((value) {
+      rateMyApp.conditions.forEach((condition) {
+        if (condition is DebuggableCondition) {
+          print("condition..${condition.valuesAsString}");
+        }
+      });
+      if (rateMyApp.shouldOpenDialog) {
+        rateMyApp.showRateDialog(context,
+            title: 'Rate this app',
+            message:
+                "If you like this app, please take a little bit of your time to review it!\nIt really helps us and it shouldn't take you more than one minute.",
+            rateButton: 'RATE',
+            noButton: "NO THANKS",
+            laterButton: "MAYBE LATER",
+            dialogStyle: DialogStyle(),
+            onDismissed: () =>
+                rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed));
+      }
+    });
   }
 
   @override

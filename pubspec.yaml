@@ -15,10 +15,10 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+7
+version: 2.0.0+9
 
 environment:
-  sdk: ">=2.16.1 <3.0.0"
+  sdk: ">=2.18.0 <3.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -50,11 +50,15 @@ dependencies:
   pin_code_fields: ^7.4.0
   provider: ^6.0.3
   firebase_analytics:
-  facebook_app_events: ^0.17.1
+  facebook_app_events:
+  # facebook_app_events: ^0.19.0
   firebase_in_app_messaging: ^0.7.0+14
+  flutter_login_facebook: ^1.8.0
   firebase_database: ^10.0.15
   get: ^4.6.5
   firebase_core_platform_interface: ^4.5.1
+  firebase_crashlytics: ^3.3.4
+  rate_my_app: ^2.0.0
 
 dev_dependencies:
   flutter_test:

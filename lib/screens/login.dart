@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +6,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:kidly/api/loginprovider.dart';
 import 'package:kidly/constant/ApiConstant.dart';
 import 'package:kidly/helper/customtextfield.dart';
-import 'package:kidly/screens/SignUpScreen.dart';
 import 'package:kidly/utils/connectivity.dart';
 import 'package:kidly/utils/snackbar.dart';
 import 'package:provider/provider.dart';

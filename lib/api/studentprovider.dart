@@ -8,7 +8,6 @@ import 'package:kidly/constant/ScreenConstant.dart';
 import 'package:kidly/utils/sharepreference.dart';
 import 'package:kidly/utils/showcircleprogressdialog.dart';
 import 'package:kidly/utils/snackbar.dart';
-import 'package:provider/provider.dart';
 
 class StudentProvider extends ChangeNotifier {
   final userNameController = TextEditingController();

@@ -1,13 +1,11 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:facebook_app_events/facebook_app_events.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:kidly/api/api.dart';
 import 'package:kidly/constant/ScreenConstant.dart';
 import 'package:kidly/screens/DashboardScreen.dart';
-import 'package:kidly/screens/DashboardScreen2.dart';
 import 'package:kidly/screens/OTPVerificationScreen.dart';
 import 'package:kidly/utils/customcircledialog.dart';
 import 'package:kidly/utils/sharepreference.dart';
