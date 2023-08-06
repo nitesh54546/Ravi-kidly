@@ -8,6 +8,8 @@ import io.flutter.embedding.android.FlutterActivity
 class MainActivity: FlutterActivity() {
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onCreate(savedInstanceState, persistentState)
+        FacebookSdk.setApplicationId(getString(R.string.facebook_app_id))
+        FacebookSdk.sdkInitialize(applicationContext)
 
     }
 }

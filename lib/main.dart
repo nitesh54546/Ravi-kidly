@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'dart:io';
 import 'package:country_picker/country_picker.dart';
-import 'package:facebook_app_events/facebook_app_events.dart';
+// import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
@@ -99,7 +99,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  static final facebookAppEvents = FacebookAppEvents();
+  // static final facebookAppEvents = FacebookAppEvents();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   void configLocalNotification() {
@@ -187,16 +187,16 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     getLoginUser();
-    facebookAppEvents.setAdvertiserTracking(enabled: true);
+    // facebookAppEvents.setAdvertiserTracking(enabled: true);
     SystemChannels.textInput.invokeMethod('TextInput.hide');
     configLocalNotification();
     getFCMToken();
-    facebookAppEvents.logEvent(
-      name: 'Tabschool Kidly',
-      parameters: {
-        'button_id': 'the_clickme_button',
-      },
-    );
+    // facebookAppEvents.logEvent(
+    //   name: 'Tabschool Kidly',
+    //   parameters: {
+    //     'button_id': 'the_clickme_button',
+    //   },
+    // );
     super.initState();
   }
 
