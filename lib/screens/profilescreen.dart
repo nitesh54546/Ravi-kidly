@@ -7,6 +7,7 @@ import 'package:kidly/constant/ApiConstant.dart';
 import 'package:kidly/modal/subscriptionModal.dart';
 import 'package:kidly/modal/userInfoModal.dart';
 import 'package:kidly/screens/SignUpScreen.dart';
+
 import 'package:kidly/screens/login.dart';
 import 'package:kidly/screens/studentlogin.dart';
 import 'package:kidly/utils/connectivity.dart';
