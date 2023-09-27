@@ -55,7 +55,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     DashboardListModel(
         title: 'Look & Choose',
         imagePath: 'assets/images/bg_look_and_choose.png',
-        bgColor: AppColors.lBasicsColorBg),
+        bgColor: AppColors.lookChooseColorBg),
+    DashboardListModel(
+        title: 'Listen & Guess',
+        imagePath: 'assets/images/bg_listen_guess.png',
+        bgColor: AppColors.listenGuessColorBg),
+    DashboardListModel(
+        title: 'Kids Preschool \nLearning',
+        imagePath: 'assets/images/bg_listen_guess.png',
+        bgColor: AppColors.preSchoolColorBg),
   ];
 
   String token = '';
@@ -202,10 +210,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     _appBar(),
                     Expanded(
                       child: ListView.builder(
-                        padding: EdgeInsets.all(10),
-                        itemCount: listData.length,
+                          padding: EdgeInsets.all(10),
+                          itemCount: listData.length,
                           shrinkWrap: true,
-                          itemBuilder:_buildItem),
+                          itemBuilder: _buildItem),
                     )
                   ],
                 ),
@@ -213,12 +221,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
-Widget _buildItem(BuildContext context, int index){
+
+  Widget _buildItem(BuildContext context, int index) {
     return Container(
+      decoration: BoxDecoration(
+          color: listData[index].bgColor,
+          borderRadius: BorderRadius.all(Radius.circular(15))),
       margin: EdgeInsets.only(bottom: 5),
-      height: MediaQuery.sizeOf(context).width/2.5,
+      height: MediaQuery.sizeOf(context).width / 2.5,
       width: double.infinity,
-      color: listData[index].bgColor,
+      child: Stack(children: [
+        Align(
+            alignment: Alignment.topRight,
+            child: Image.asset(listData[index].imagePath))
+      ],),
     );
   }
 
@@ -288,7 +304,6 @@ Widget _buildItem(BuildContext context, int index){
       ),
     );
   }
-
 
   callSubscribedUser(BuildContext context, String id, String transactionId,
       String token) async {
