@@ -27,7 +27,7 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
       height: double.infinity,
       decoration: const BoxDecoration(
           image: DecorationImage(
-              image: AssetImage('assets/images/backgound.png'),
+              image: AssetImage('assets/images/backgound_old.png'),
               fit: BoxFit.cover)),
       child: Scaffold(
         backgroundColor: Colors.transparent,

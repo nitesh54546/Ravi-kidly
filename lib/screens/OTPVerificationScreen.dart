@@ -95,7 +95,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
       height: double.infinity,
       decoration: const BoxDecoration(
           image: DecorationImage(
-              image: AssetImage('assets/images/backgound.png'),
+              image: AssetImage('assets/images/backgound_old.png'),
               fit: BoxFit.cover)),
       child: Scaffold(
         backgroundColor: Colors.transparent,

@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
         height: double.infinity,
         decoration: const BoxDecoration(
             image: DecorationImage(
-                image: AssetImage('assets/images/backgound.png'),
+                image: AssetImage('assets/images/backgound_old.png'),
                 fit: BoxFit.cover)),
         child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -50,11 +50,11 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                "assets/images/newlogo.png",
-                height: 70,
+                "assets/images/ic_kidly_logo.png",
+                height: 90,
               ),
               const SizedBox(
-                height: 89,
+                height: 85,
               ),
               Row(
                 children: [

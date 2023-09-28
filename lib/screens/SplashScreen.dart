@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(
-              image: AssetImage('assets/images/backgound.png'),
+              image: AssetImage('assets/images/backgound_old.png'),
               fit: BoxFit.cover)),
       child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -29,9 +29,11 @@ class _SplashScreenState extends State<SplashScreen> {
               children: [
                 const Spacer(),
                 Image.asset(
-                  'assets/images/newlogo.png',
+                  'assets/images/ic_kidly_logo.png',
+                  height: 90,
                   // fit: BoxFit.cover,
                 ),
+/*
                 const Padding(
                   padding: EdgeInsets.only(left: 4, right: 7),
                   child: Text(
@@ -49,8 +51,9 @@ class _SplashScreenState extends State<SplashScreen> {
                         ]),
                   ),
                 ),
+*/
                 const SizedBox(
-                  height: 75,
+                  height: 85,
                 ),
                 GestureDetector(
                     behavior: HitTestBehavior.translucent,

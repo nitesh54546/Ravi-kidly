@@ -4,11 +4,13 @@ import 'dart:io';
 import 'dart:ui';
 import 'dart:math' as math;
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:kidly/constant/searchprovider.dart';
 import 'package:kidly/modal/dashboard_list_model.dart';
 import 'package:kidly/modal/searchmodal.dart';
 import 'package:kidly/modal/storyBooksmodal.dart';
+import 'package:kidly/screens/settings_screen.dart';
 import 'package:kidly/screens/webview.dart';
 import 'package:kidly/utils/connectivity.dart';
 import 'package:kidly/utils/constants.dart';
@@ -29,6 +31,7 @@ import 'package:kidly/utils/snackbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant/AppColors.dart';
+import 'kids_activities_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -43,27 +46,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
     DashboardListModel(
         title: 'Kids Educational\nActivities',
         imagePath: 'assets/images/bg_activities.png',
-        bgColor: AppColors.activitiesColorBg),
+        bgColor: AppColors.activitiesColorBg,
+        imageWidth: 1.0),
     DashboardListModel(
         title: 'Kids Stories',
         imagePath: 'assets/images/bg_stories.png',
-        bgColor: AppColors.storiesColorBg),
+        bgColor: AppColors.storiesColorBg,
+        imageWidth: 1.0),
     DashboardListModel(
         title: 'Learning the \nbasics',
         imagePath: 'assets/images/bg_learning_basics.png',
-        bgColor: AppColors.lBasicsColorBg),
+        bgColor: AppColors.lBasicsColorBg,
+        imageWidth: 1.6),
     DashboardListModel(
         title: 'Look & Choose',
         imagePath: 'assets/images/bg_look_and_choose.png',
-        bgColor: AppColors.lookChooseColorBg),
+        bgColor: AppColors.lookChooseColorBg,
+        imageWidth: 1.0),
     DashboardListModel(
         title: 'Listen & Guess',
         imagePath: 'assets/images/bg_listen_guess.png',
-        bgColor: AppColors.listenGuessColorBg),
+        bgColor: AppColors.listenGuessColorBg,
+        imageWidth: 1.0),
     DashboardListModel(
         title: 'Kids Preschool \nLearning',
-        imagePath: 'assets/images/bg_listen_guess.png',
-        bgColor: AppColors.preSchoolColorBg),
+        imagePath: 'assets/images/bg_preschool.png',
+        bgColor: AppColors.preSchoolColorBg,
+        imageWidth: 1.6),
+    DashboardListModel(
+        title: 'Kids Drawing',
+        imagePath: 'assets/images/bg_kids_drawing.png',
+        bgColor: AppColors.drawingColorBg,
+        imageWidth: 1.0),
   ];
 
   String token = '';
@@ -223,25 +237,50 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildItem(BuildContext context, int index) {
-    return Container(
-      decoration: BoxDecoration(
-          color: listData[index].bgColor,
-          borderRadius: BorderRadius.all(Radius.circular(15))),
-      margin: EdgeInsets.only(bottom: 5),
-      height: MediaQuery.sizeOf(context).width / 2.5,
-      width: double.infinity,
-      child: Stack(children: [
-        Align(
-            alignment: Alignment.topRight,
-            child: Image.asset(listData[index].imagePath))
-      ],),
+    return InkWell(
+      onTap: () {
+        if (index == 0) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => KidsActivitiesScreen()));
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+            color: listData[index].bgColor,
+            borderRadius: BorderRadius.all(Radius.circular(20))),
+        margin: EdgeInsets.only(bottom: 10),
+        height: MediaQuery.sizeOf(context).width / 2.5,
+        width: double.infinity,
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                listData[index].title,
+                style: TextStyle(color: Colors.white),
+              ),
+            ).paddingOnly(left: 5),
+            Positioned(
+                right: 0,
+                bottom: 0,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20), // Image border
+                  child: Image.asset(
+                    listData[index].imagePath,
+                    fit: BoxFit.fitWidth,
+                    width: MediaQuery.sizeOf(context).width /
+                        listData[index].imageWidth,
+                  ),
+                ))
+          ],
+        ),
+      ),
     );
   }
 
   _appBar() {
     return Container(
       // height: 110,
-
       decoration: const BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.bottomCenter,
@@ -267,6 +306,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           GestureDetector(
               onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SettingsScreen()));
+                return;
+
                 Navigator.push(
                         context,
                         MaterialPageRoute(
